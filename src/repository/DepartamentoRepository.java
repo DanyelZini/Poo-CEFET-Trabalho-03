@@ -10,6 +10,10 @@ public class DepartamentoRepository implements CrudRepository<Departamento> {
     private static Integer nextid = 0;
     private static List<Departamento> instance = new ArrayList<>();
     
+    public static DepartamentoRepository getInstance() {
+        return new DepartamentoRepository();
+    }
+
     @Override
     public void salvar(Departamento obj) {
         if (obj.getId() == null) {

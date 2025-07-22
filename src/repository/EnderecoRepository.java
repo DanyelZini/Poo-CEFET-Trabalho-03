@@ -10,6 +10,10 @@ public class EnderecoRepository implements CrudRepository<Endereco> {
     private static Integer nextid = 0;
     private static List<Endereco> instance = new ArrayList<>();
 
+    public static EnderecoRepository getInstance() {
+        return new EnderecoRepository();
+    }
+
     @Override
     public void salvar(Endereco obj) {
         if (obj.getId() == null) {
@@ -25,7 +29,7 @@ public class EnderecoRepository implements CrudRepository<Endereco> {
                 return new Endereco(endereco);
             }
         }
-        return null;
+        throw new UnsupportedOperationException("Endereco com id " + id + " nao encontrado.");
     }
 
     @Override

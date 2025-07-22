@@ -8,15 +8,29 @@ import java.util.List;
 import model.Endereco;
 import model.Paciente;
 import model.PlanoSaude;
+import util.CpfUtils;
 
 public class PacienteRepository implements CrudRepository<Paciente> {
     private static Integer nextid = 0;
     private static List<Paciente> instance = new ArrayList<>();
 
+    public static PacienteRepository getInstance() {
+        return new PacienteRepository();
+    }
+
     @Override
     public void salvar(Paciente obj) {
         if (obj.getId() == null) {
             obj.setId(++nextid);
+        }
+        if (!CpfUtils.isCpfValido(obj.getCpf())) {
+            throw new IllegalArgumentException("CPF invalido: " + obj.getCpf());
+        }
+
+        obj.setCpf(CpfUtils.formatarCpf(obj.getCpf()));
+
+        if (this.buscarPorCpf(obj.getCpf()) != null) {
+            throw new IllegalArgumentException("CPF ja cadastrado: " + obj.getCpf());
         }
         if (obj.getPlanoSaude() == null) {
             obj.setPlanoSaude(new PlanoSaude());
@@ -25,6 +39,16 @@ public class PacienteRepository implements CrudRepository<Paciente> {
             obj.setEndereco(new Endereco());
         }
         instance.add(new Paciente(obj.getId(), obj.getNome(), obj.getCpf(), obj.getDataNascimento(), new Endereco(obj.getEndereco()), new PlanoSaude(obj.getPlanoSaude())));
+    }
+
+    public Paciente buscarPorCpf(String cpf) {
+        cpf = CpfUtils.formatarCpf(cpf);
+        for (Paciente paciente : instance) {
+            if (paciente.getCpf().equals(cpf)) {
+                return paciente;
+            }
+        }
+        return null;
     }
 
     @Override

@@ -1,6 +1,11 @@
 package util;
 
 public class CpfUtils {
+
+    public static CpfUtils getInstance() {
+        return new CpfUtils();
+    }
+
     public static String formatarCpf(String cpf) {
         return cpf.replaceAll("[\\.\\-]", "");
     }

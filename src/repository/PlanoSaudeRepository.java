@@ -10,6 +10,9 @@ public class PlanoSaudeRepository implements CrudRepository<PlanoSaude> {
     private static Integer nextid = 0;
     private static List<PlanoSaude> instance = new ArrayList<>();
     
+    public static PlanoSaudeRepository getInstance() {
+        return new PlanoSaudeRepository();
+    }
 
     @Override
     public void salvar(PlanoSaude obj) {

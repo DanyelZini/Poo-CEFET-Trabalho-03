@@ -7,18 +7,41 @@ import interfaces.CrudRepository;
 import model.Departamento;
 import model.Endereco;
 import model.Medico;
+import util.CpfUtils;
 
 public class MedicoRepository implements CrudRepository<Medico>{
     private static Integer nextid = 0;
     private static List<Medico> instance = new ArrayList<>();
+
+    public static MedicoRepository getInstance() {
+        return new MedicoRepository();
+    }
 
     @Override
     public void salvar(Medico obj) {
         if (obj.getId() == null) {
             obj.setId(++nextid);
         }
+        if (!CpfUtils.isCpfValido(obj.getCpf())) {
+            throw new IllegalArgumentException("CPF invalido: " + obj.getCpf());
+        }
+        obj.setCpf(CpfUtils.formatarCpf(obj.getCpf()));
+        if (this.buscarPorCpf(obj.getCpf()) != null) {
+            throw new IllegalArgumentException("CPF ja cadastrado: " + obj.getCpf());
+        }
         instance.add(new Medico(obj.getId(), obj.getNome(), obj.getCpf(), obj.getDataNascimento(), new Endereco(obj.getEndereco()), new Departamento(obj.getDepartamento())));
     }
+
+    public Medico buscarPorCpf(String cpf) {
+        cpf = CpfUtils.formatarCpf(cpf);
+        for (Medico medico : instance) {
+            if (medico.getCpf().equals(cpf)) {
+                return medico;
+            }
+        }
+        throw new UnsupportedOperationException("Medico com CPF " + cpf + " nao encontrado."); 
+    }
+
     @Override
     public Medico buscarPorId(int id) {
         for (Medico medico : instance) {
