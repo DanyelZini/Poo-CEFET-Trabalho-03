@@ -39,7 +39,7 @@ public class MedicoRepository implements CrudRepository<Medico>{
                 return medico;
             }
         }
-        throw new UnsupportedOperationException("Medico com CPF " + cpf + " nao encontrado."); 
+        return null; 
     }
 
     @Override
